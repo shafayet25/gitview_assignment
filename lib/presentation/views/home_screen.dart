@@ -236,7 +236,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  //  List View
+  //  List View for Show Repositories
+
   Widget buildListView(List<RepoModel> repos, {Key? key}) {
     return ListView.builder(
       key: key,
@@ -252,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  //  Grid View
+  //  Grid View for Show Repositories
   Widget buildGridView(List<RepoModel> repos, {Key? key}) {
     return GridView.builder(
       key: key,
