@@ -27,5 +27,15 @@ A Flutter app to view GitHub user profiles and repositories.
 - Dark/Light theme support
 
 ## Screenshots
+### Home Screen
+![Home Screen](assets/screens/login_screen.jpeg)
 
+### Repo Listview show with User details Screen
+![Listview Screen](assets/screens/repo_list_screen.jpeg)
+
+### Repo Gridview show with User details Screen
+![Gridview Screen](assets/screens/repo_grid_screen.jpeg)
+
+### Repositories details Screen
+![Repositories Screen](assets/screens/details_screen.jpeg)
 
