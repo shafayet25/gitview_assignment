@@ -1,16 +1,31 @@
-# gitview_assignment
 
-A new Flutter project.
+# GitView Assignment
 
-## Getting Started
+## Description
+A Flutter app to view GitHub user profiles and repositories.
 
-This project is a starting point for a Flutter application.
+## How to Use
+1. Install the app on your device.
+2. Login with GitHub username & use Switch button for Light Theme to Dark Theme.
+3. View profile and repositories.
+4. Search repositories.
+5. Tap a repository to see details. 
+6. Tap the button to the right side of "You Repository" Switch Listview to Gridview.
+7. Logout.
 
-A few resources to get you started if this is your first Flutter project:
+## Features
+- Profile view
+- Repository list/grid toggle
+- Repository search/filter
+- Repository details page
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Development Criteria
+- Flutter 3.9+
+- GetX for state management
+- Dio for API requests
+- MVVM architecture
+- Dark/Light theme support
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+
+
