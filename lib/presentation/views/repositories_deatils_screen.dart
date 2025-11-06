@@ -9,7 +9,7 @@ class RepositoriesDeatilsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Scaffold(
         appBar: AppBar(
-        title: Text(repo.name ?? "Repository Details"),
+        title: Text('Repositories Details' ?? "Repository Details"),
       ),
       
       body: Padding(

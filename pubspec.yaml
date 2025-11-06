@@ -41,6 +41,7 @@ flutter:
   assets:
      - assets/github.png
      - assets/icons/
+     - assets/screens/
 
 
 
