@@ -8,6 +8,8 @@ class AppTheme{
       brightness: Brightness.light,
       primaryColor: AppColor.lightPrimary,
       useMaterial3: true,
+       scaffoldBackgroundColor: AppColor.lightBackground,
+       cardColor: Colors.blue.shade50,
       appBarTheme: AppBarTheme(
         backgroundColor: AppColor.lightBackground
       ),
@@ -22,6 +24,8 @@ class AppTheme{
       brightness: Brightness.dark,
       primaryColor: AppColor.darkPrimary,
       useMaterial3: true,
+       scaffoldBackgroundColor: AppColor.darkBackground,
+       cardColor: AppColor.darkCard,
       appBarTheme: AppBarTheme(
         backgroundColor: AppColor.darkBackground
       ),

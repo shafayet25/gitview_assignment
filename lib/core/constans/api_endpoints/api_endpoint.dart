@@ -5,6 +5,6 @@ class ApiEndpoint {
   // Login url for user data fatch
   static const loginUrl='${baseUrl}users/';
 
-    // User repo data fatch
+    // User repo data fatch(not use)
   static const repoUrl='users/{username}/repo';
 }

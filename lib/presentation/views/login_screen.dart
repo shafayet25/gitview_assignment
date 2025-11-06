@@ -26,7 +26,7 @@ final ThemeViewModel themeController = Get.find<ThemeViewModel>();
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height:20),
+              
               /// Theme Toggle
               Align(
                 alignment: Alignment.topRight,
@@ -68,7 +68,7 @@ final ThemeViewModel themeController = Get.find<ThemeViewModel>();
                     onPressed: () async {
                       String username = usernameController.text.trim();
                         await authController.getUser(username);
-                    print("✅ Login Success:${ApiEndpoint.loginUrl}$username"); 
+                    //print("✅ Login Success:${ApiEndpoint.loginUrl}$username"); 
                     },
                   ),
                 

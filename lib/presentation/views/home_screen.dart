@@ -6,6 +6,9 @@ import 'package:gitview_assignment/data/models/repo_model.dart';
 import 'package:gitview_assignment/data/models/user_model.dart';
 import 'package:gitview_assignment/presentation/view_models/auth_view_model.dart';
 import 'package:gitview_assignment/presentation/view_models/repo_view_model.dart';
+import 'package:gitview_assignment/presentation/views/repositories_deatils_screen.dart';
+import 'package:gitview_assignment/presentation/widgets/repo_cards/repos_grid_card.dart';
+import 'package:gitview_assignment/presentation/widgets/repo_cards/repos_list_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final UserPreferences _prefs = UserPreferences();
   bool isGridView = false;
   UserModel? user;
+ 
+
 
   @override
   void initState() {
@@ -34,9 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
         user = savedUser;
       });
       controller.fetchRepos(savedUser.login);
-      print("⚠️ Fetching repos for: ${savedUser.login}");
+      
+  
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -96,17 +104,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 20),
 
+
                   // User Details Container
                   Container(
+                    width: double.infinity,
                     margin: const EdgeInsets.symmetric(horizontal: 16),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: theme.cardColor,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade300, width: 1.5),
+                      border: Border.all(color: Colors.blue.shade50, width: 1.5),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.shade200,
+                          color: Colors.grey.shade50,
                           blurRadius: 6,
                           offset: const Offset(0, 3),
                         )
@@ -115,15 +125,39 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Bio: ${user!.bio ?? 'No bio'}"),
+                        Text("Bio: ${user!.bio ?? 'No bio'}",style:theme.textTheme.bodyMedium),
                         const SizedBox(height: 8),
-                        Text("Followers: ${user!.followers ?? 0}"),
-                        Text("Following: ${user!.following ?? 0}"),
+                        Text("Followers: ${user!.followers ?? 0}",style:theme.textTheme.bodyMedium),
+                        Text("Following: ${user!.following ?? 0}",style:theme.textTheme.bodyMedium),
                       ],
                     ),
                   ),
 
                   const SizedBox(height: 20),
+
+
+
+                  // Search TextField
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: TextField(
+                      
+                      onChanged: (query){
+                          controller.filterRepos(query);
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Search repositories...",
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                   const SizedBox(height: 20),
+
+
 
                   // Repository Header with Toggle
                   Padding(
@@ -132,33 +166,43 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Text('Your Repositories',
                             style: theme.textTheme.titleMedium),
+
                         const Spacer(),
-                        IconButton(
-                          icon: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            transitionBuilder: (child, anim) =>
-                                RotationTransition(
-                              turns: Tween<double>(begin: 0.75, end: 1)
-                                  .animate(anim),
-                              child: FadeTransition(opacity: anim, child: child),
-                            ),
-                            child: isGridView
-                                ? const Icon(Icons.grid_view,
-                                    key: ValueKey('grid'))
-                                : const Icon(Icons.list,
-                                    key: ValueKey('list')),
+
+                        Container(
+                          decoration: BoxDecoration(
+                            color:theme.cardColor,
+                            borderRadius: BorderRadius.circular(50),
                           ),
-                          onPressed: () {
-                            setState(() {
-                              isGridView = !isGridView;
-                            });
-                          },
+                          child: IconButton(
+                            icon: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 300),
+                              transitionBuilder: (child, anim) =>
+                                  RotationTransition(
+                                turns: Tween<double>(begin: 0.75, end: 1)
+                                    .animate(anim),
+                                child: FadeTransition(opacity: anim, child: child),
+                              ),
+                              child: isGridView
+                                  ? const Icon(Icons.grid_view,
+                                      key: ValueKey('grid'))
+                                  : const Icon(Icons.list,
+                                      key: ValueKey('list')),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isGridView = !isGridView;
+                              });
+                            },
+                          ),
                         ),
                       ],
                     ),
                   ),
 
                   const SizedBox(height: 10),
+
+
 
                   // Repository List/Grid
                   Expanded(
@@ -192,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // 📋 List View
+  //  List View
   Widget buildListView(List<RepoModel> repos, {Key? key}) {
     return ListView.builder(
       key: key,
@@ -200,30 +244,15 @@ class _HomeScreenState extends State<HomeScreen> {
       itemCount: repos.length,
       itemBuilder: (context, index) {
         final repo = repos[index];
-        return Container(
-          margin: const EdgeInsets.symmetric(vertical: 6),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.blue.shade50,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.blue.shade100),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(repo.name ?? "Unnamed Repo",
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 6),
-              Text(repo.description ?? "No description"),
-            ],
-          ),
-        );
+        return RepoListCard(repo: repo,
+        onTap: (){
+            Get.to(() => RepositoriesDeatilsScreen(repo: repo));
+        });
       },
     );
   }
 
-  // 🟩 Grid View
+  //  Grid View
   Widget buildGridView(List<RepoModel> repos, {Key? key}) {
     return GridView.builder(
       key: key,
@@ -237,30 +266,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       itemBuilder: (context, index) {
         final repo = repos[index];
-        return Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.green.shade50,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.green.shade100),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(repo.name ?? "Unnamed Repo",
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 4),
-              Expanded(
-                child: Text(
-                  repo.description ?? "No description",
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                ),
-              ),
-            ],
-          ),
-        );
+        return RepoGridCard(repo: repo,
+        onTap: (){
+          Get.to(() => RepositoriesDeatilsScreen(repo: repo));
+        });
+
       },
     );
   }

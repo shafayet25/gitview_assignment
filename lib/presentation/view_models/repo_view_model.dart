@@ -8,20 +8,11 @@ import 'package:gitview_assignment/data/repository/repo_repositories.dart';
 
 class RepoController extends GetxController{
  final RepoRepositories _repoRepository = RepoRepositories();
-  // var repoResponse = ApiResponse<List<RepoModel>>.loading().obs;
+  
  
+  // Observable for filtered repo list
+  var filteredRepos = <RepoModel>[].obs;
 
-  // void fetchRepos(String username) async {
-  //   try {
-  //     repoResponse.value = ApiResponse.loading();
-  //     final repos = await _repoRepository.fetchRepos(username);
-  //     repoResponse.value = ApiResponse.completed(repos);
-  //   } catch (e) {
-  //     repoResponse.value = ApiResponse.error(e.toString());
-  //   }
-  // }
-  // Observable repo list
-  // Observable for API response
   var repoResponse = ApiResponse<List<RepoModel>>.loading().obs;
 
   // Fetch repositories
@@ -36,16 +27,29 @@ class RepoController extends GetxController{
     } catch (e) {
       // Update response with error state
       repoResponse.value = ApiResponse.error(e.toString());
-      print("❌ Error fetching repos: $e");
+     
+    }
+  }
+
+   // Filter repositories based on query
+  void filterRepos(String query) {
+    final allRepos = repoResponse.value.data ?? [];
+    if (query.isEmpty) {
+      filteredRepos.value = allRepos;
+    } else {
+      filteredRepos.value = allRepos
+          .where((repo) => repo.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
     }
   }
 
   // Getter for easy access in HomeScreen
   List<RepoModel> get repoList =>
-      repoResponse.value.data ?? []; // Return empty list if null
+      repoResponse.value.data ?? []; 
 
+// check loading state
   bool get isLoading =>
-      repoResponse.value.status == Status.LOADING; // check loading state
+      repoResponse.value.status == Status.LOADING; 
 }
 
   

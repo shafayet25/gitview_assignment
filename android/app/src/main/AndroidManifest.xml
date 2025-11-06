@@ -3,7 +3,7 @@
 <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="gitview_assignment"
+        android:label="GitView"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

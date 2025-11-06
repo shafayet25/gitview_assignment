@@ -32,7 +32,7 @@ class AuthController extends GetxController{
       await _prefs.saveUser(fetchedUser);
       user = fetchedUser;
       userResponse.value = ApiResponse.completed(fetchedUser);
-      print("✅ Login Success: $user"); 
+      
             // Success Snackbar
       Get.snackbar(
         "Success",
@@ -42,11 +42,12 @@ class AuthController extends GetxController{
         colorText: Colors.white,
       );
 
-      Get.toNamed(AppRoute.homeScreen);
+      Get.offAllNamed(AppRoute.homeScreen);
+      
       
     } catch (e) {
       userResponse.value = ApiResponse.error(e.toString());
-      print(" ❌ Login Error: $e"); 
+      
        Get.snackbar(
         "error",
         "$e",

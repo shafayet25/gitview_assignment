@@ -17,13 +17,10 @@ class ApiService extends BaseApiService{
 
   @override
   Future<dynamic> getRequest(String url,{String? token}) async{
-    //print(" ❌ url: $url"); 
+    
    try{
-     print("ApiService GET request URL: $url"); 
-    final response= await _dio.get(
-      url
-
-    );
+    
+    final response= await _dio.get( url);
     return _returnResponse(response);
 
    }catch(e){
@@ -31,6 +28,8 @@ class ApiService extends BaseApiService{
    }
 
   }
+
+// For Post Request
 
   @override
   Future<dynamic> postRequest(String url, data,{String? token}) async {
@@ -41,7 +40,7 @@ class ApiService extends BaseApiService{
       options: Options(
         headers: {
             if (token != null && token.isNotEmpty)
-              'Authorization': 'Bearer $token', // token থাকলে add করবে
+              'Authorization': 'Bearer $token', 
           },
       )       
 
