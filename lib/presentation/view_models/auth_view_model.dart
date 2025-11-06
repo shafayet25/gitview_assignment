@@ -1,56 +1,72 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gitview_assignment/core/routes/app_route.dart';
 import 'package:gitview_assignment/data/data_suorce/local/user_preference.dart';
 import 'package:gitview_assignment/data/data_suorce/remote/api_response/api_response.dart';
-import 'package:gitview_assignment/data/data_suorce/remote/api_response/status.dart';
 import 'package:gitview_assignment/data/models/user_model.dart';
 import 'package:gitview_assignment/data/repository/login_repositories.dart';
 
 
 class AuthController extends GetxController{
-  final _repo =LoginRepositories();
-  final _prefs = UserPreference();
+    final LoginRepositories _repo = LoginRepositories();
+  final UserPreferences _prefs = UserPreferences();
 
-  var apiResponse=ApiResponse<UserModel>.loading().obs;
+  var userResponse = ApiResponse.loading().obs;
+  // var userResponse = Rx<ApiResponse<UserModel>>(ApiResponse(null, null, null));
+  UserModel? user;
 
-
-   /// Login function
-  void login(String username) async {
-    if (username.isEmpty) {
-      apiResponse.value = ApiResponse.error("Please enter a username");
+  Future<void> getUser(String username) async {
+     if (username.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Username cannot be empty",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
-
-    apiResponse.value = ApiResponse.loading(); // Loading state
-
+    userResponse.value = ApiResponse.loading();
     try {
-      final response = await _repo.loginUser(username);
+      final fetchedUser = await _repo.fetchUser(username);
+      await _prefs.saveUser(fetchedUser);
+      user = fetchedUser;
+      userResponse.value = ApiResponse.completed(fetchedUser);
+      print("✅ Login Success: $user"); 
+            // Success Snackbar
+      Get.snackbar(
+        "Success",
+        "Login Successful",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
 
-      if (response.status == Status.COMPLETED) {
-        // Save user to SharedPreferences
-        await _prefs.saveUser(response.data!);
-        apiResponse.value = response;
-        
-        // Navigate to Home Page
-        Get.offAllNamed(AppRoute.homeScreen);
-      } else {
-        apiResponse.value = response;
-      }
+      Get.toNamed(AppRoute.homeScreen);
+      
     } catch (e) {
-      apiResponse.value = ApiResponse.error(e.toString());
+      userResponse.value = ApiResponse.error(e.toString());
+      print(" ❌ Login Error: $e"); 
+       Get.snackbar(
+        "error",
+        "$e",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
-  Future<UserModel?> loadUserFromPrefs() async {
-    return await _prefs.getUser();
+  Future<void> loadUser() async {
+    final savedUser = await _prefs.getUser();
+    if (savedUser != null) {
+      user = savedUser;
+      userResponse.value = ApiResponse.completed(savedUser);
+    }
   }
 
-  void logout() async {
+  Future<void> logout() async {
     await _prefs.clearUser();
-    Get.offAllNamed(AppRoute.loginScreen);
+    user = null;
   }
-
-
-
 }
-

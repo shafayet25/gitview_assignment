@@ -5,10 +5,9 @@ import 'package:gitview_assignment/data/data_suorce/remote/base_api_service.dart
 
 
 class ApiService extends BaseApiService{
-  final token='kmknjnjn';
+  
   final Dio _dio =Dio(
-    BaseOptions(connectTimeout: Duration(seconds: 10),
-                receiveTimeout: Duration(seconds: 10),
+    BaseOptions(
                 headers: {
                   'Accept':'application/json',
                   'Content-Type': 'application/json',
@@ -17,16 +16,13 @@ class ApiService extends BaseApiService{
 
 
   @override
-  Future getRequest(String url) async{
+  Future<dynamic> getRequest(String url,{String? token}) async{
+    //print(" ❌ url: $url"); 
    try{
+     print("ApiService GET request URL: $url"); 
     final response= await _dio.get(
-      url,
-      options: Options(
-        headers: {
-            if (token != null && token.isNotEmpty)
-              'Authorization': 'Bearer $token',         
-        }
-      )
+      url
+
     );
     return _returnResponse(response);
 
@@ -37,7 +33,7 @@ class ApiService extends BaseApiService{
   }
 
   @override
-  Future postRequest(String url, data) async {
+  Future<dynamic> postRequest(String url, data,{String? token}) async {
     try{
       final response= await _dio.post(
         url,
@@ -45,8 +41,8 @@ class ApiService extends BaseApiService{
       options: Options(
         headers: {
             if (token != null && token.isNotEmpty)
-              'Authorization': 'Bearer $token',         
-        }
+              'Authorization': 'Bearer $token', // token থাকলে add করবে
+          },
       )       
 
       );

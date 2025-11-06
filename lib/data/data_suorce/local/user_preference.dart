@@ -3,36 +3,26 @@ import 'package:gitview_assignment/data/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-class UserPreference {
-  static const String _keyUser = 'user_data';
+class UserPreferences {
+  static const _keyUser = 'userData';
 
-  /// Save user data
-  Future<bool> saveUser(UserModel user) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    // Convert UserModel to JSON string
-    final userJson = jsonEncode({
-      'login': user.login,
-      'avatar_url': user.avatarUrl,
-      'name': user.name,
-      'bio': user.bio,
-    });
-    return prefs.setString(_keyUser, userJson);
+  Future<void> saveUser(UserModel user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_keyUser, jsonEncode(user.toJson()));
   }
 
-  /// Get saved user
   Future<UserModel?> getUser() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(_keyUser);
-
-    if (jsonString == null) return null;
-
-    final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-    return UserModel.fromJson(jsonMap);
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString(_keyUser);
+    if (userString != null) {
+      final json = jsonDecode(userString);
+      return UserModel.fromJson(json);
+    }
+    return null;
   }
 
-  /// Remove user data
-  Future<bool> clearUser() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.remove(_keyUser);
+  Future<void> clearUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_keyUser);
   }
 }

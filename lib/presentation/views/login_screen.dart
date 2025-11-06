@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:gitview_assignment/core/constans/api_endpoints/api_endpoint.dart';
 import 'package:gitview_assignment/core/constans/app_color/color.dart';
 import 'package:gitview_assignment/presentation/view_models/auth_view_model.dart';
+import 'package:gitview_assignment/presentation/view_models/theme_view_model.dart';
 import 'package:gitview_assignment/presentation/widgets/main_button.dart';
-import 'package:gitview_assignment/presentation/widgets/textFiled.dart';
+import 'package:gitview_assignment/presentation/widgets/text_filed.dart';
 
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreen extends StatelessWidget {
 
 final usernameController=TextEditingController();
 final AuthController authController=AuthController();
+final ThemeViewModel themeController = Get.find<ThemeViewModel>();
+
+  LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,19 @@ final AuthController authController=AuthController();
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 100),
+              SizedBox(height:20),
+              /// Theme Toggle
+              Align(
+                alignment: Alignment.topRight,
+                child: Obx(() => Switch(
+                      value: themeController.isDarkMode.value,
+                      activeThumbColor: AppColor.lightPrimary,
+                      onChanged: (value) => themeController.toggleTheme(),
+                    )),
+              ),
+              SizedBox(height: 80),
+
+
               // Logo
               Image.asset('assets/github.png'),
               SizedBox(height: 30),
@@ -46,20 +57,23 @@ final AuthController authController=AuthController();
                   children: [
                     Text('Username',style: theme.textTheme.bodyLarge),
                     SizedBox(height: 10),
-                    CustomTextField(hintText: 'Enter Your User Name', controller: usernameController,),
+                    CustomTextField(hintText: 'Enter Your User Name', controller: usernameController),
 
                   ],
                 ),
               SizedBox(height: 30),
-
-
-              // SignIn Button
-              CustomElevatedButton(text: 'Sign in', 
+          
+                  CustomElevatedButton(
+                    text: 'Sign in',
+                    onPressed: () async {
+                      String username = usernameController.text.trim();
+                        await authController.getUser(username);
+                    print("✅ Login Success:${ApiEndpoint.loginUrl}$username"); 
+                    },
+                  ),
+                
             
-              onPressed: (){
-                authController.login(usernameController.text.trim());
-               //Get.toNamed(AppRoute.homeScreen);
-              }),
+
               SizedBox(height: 50),
 
               // End Text
@@ -89,4 +103,6 @@ final AuthController authController=AuthController();
         ),
     );
   }
+
 }
+
